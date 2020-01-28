@@ -20,6 +20,6 @@ from top to bottom accordingly.
 - three levels of task priority: low, medium, high
 
 - each priority level has a corresponding color:
-low proirity: default color
-medium priority: yellow
-high priority: red
+  - low proirity: default color
+  - medium priority: yellow
+  - high priority: red
