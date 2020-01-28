@@ -1,0 +1,16 @@
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="panel panel-default">	
+    <div class="panel-heading">
+      <h3 class="panel-title">To-Do List</h3>
+    </div>
+    <div class="panel-body"> 
+      <ul class="list-group">
+        <p>To-do list is empty.</p>
+        <a href="{{ url_for('add_task') }}" class="btn btn-default btn-sm">Add task</a>
+      </ul>
+    </div>
+</ul>
+{% endblock %}
