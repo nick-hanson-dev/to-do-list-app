@@ -1,16 +1,43 @@
 {% extends "bootstrap/base.html" %}
 
 {% block content %}
-<div class="container">
-  <div class="panel panel-default">	
-    <div class="panel-heading">
-      <h3 class="panel-title">To-Do List</h3>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">To-Do List</h3>
+  </div>
+  <div class="panel-body">
+    <ul class="list-group">
+      <p id="empty-list">Your to-do list is empty.</p>
+      {% for task in tasks %}
+      <li class="list-group-item">
+        {{ task.description }}
+      </li>
+      {% endfor %}
+    </ul>
+    <button role="button" class="btn btn-default btn-sm" data-target="#task-modal" data-toggle="modal">Add task</button>
+  </div>
+</div>
+
+<div class="modal fade" id="task-modal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button role="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Add task</h3>
+      </div>
+      <form role="form" action="/" method="POST">
+        <div class="modal-body">
+          <div class="form-group">
+            <input name="description" type="text" class="form-control" required>
+            <p class="help-block">What do you need to get done?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" role="button" class="btn btn-default btn-sm">Add</button>
+          <button type="button" role="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
     </div>
-    <div class="panel-body"> 
-      <ul class="list-group">
-        <p>To-do list is empty.</p>
-        <a href="{{ url_for('add_task') }}" class="btn btn-default btn-sm">Add task</a>
-      </ul>
-    </div>
-</ul>
+  </div>
+</div>
 {% endblock %}
