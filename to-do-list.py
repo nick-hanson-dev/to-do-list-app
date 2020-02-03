@@ -1,19 +1,30 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
-bootstap = Bootstrap(app)
+app.config[ 'SQLALCHEMY_DATABASE_URI' ] = os.environ.get( 'DATABASE_URI' ) + '/todo'
 
-@app.route('/')
+bootstrap = Bootstrap(app)
+db = SQLAlchemy(app)
+
+class Task(db.Model):
+  __tablename__ = 'tasks'
+  id = db.Column( db.Integer, primary_key=True )
+  description = db.Column( db.String( 64 ), unique=True )
+
+db.create_all()
+
+@app.route('/', methods=[ 'GET', 'POST' ])
 def index():
-	return render_template('index.html')
-
-@app.route('/add-task', methods=["GET", "POST"])
-def add_task():
-    if request.method == "POST":
-    	print "A task was added"
-    	return redirect( url_for("index") )
-    else: 
-        return render_template("add-task.html")
+  if request.method == 'POST':
+    task = Task()
+    task.description = request.form.get( 'description' )
+    db.session.add( task )
+    db.session.commit()
+  tasks = db.session.query( Task )
+  return render_template( 'index.html', tasks=tasks )
 
 app.run()
+  
