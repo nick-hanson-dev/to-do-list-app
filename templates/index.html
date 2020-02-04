@@ -1,31 +1,54 @@
 {% extends "bootstrap/base.html" %}
 
 {% block content %}
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">To-Do List</h3>
-  </div>
-  <div class="panel-body">
-    <ul class="list-group">
-      <p id="empty-list">Your to-do list is empty.</p>
-      {% for task in tasks %}
-      <li class="list-group-item">
-        {{ task.description }}
-      </li>
-      {% endfor %}
-    </ul>
-    <button role="button" class="btn btn-default btn-sm" data-target="#task-modal" data-toggle="modal">Add task</button>
+<div class="page-header text-center">
+  <h1>To-Do List</h1>
+</div>
+<div class="container">
+  <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">	
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">To-Do List</h3>
+          </div>
+          <div class="panel-body">
+            <ul class="list-group">
+              {% if tasks|count == 0 %}
+                <p id="empty-list">Your to-do list is empty.</p>
+              {% else %}
+              {% for task in tasks %}
+                <li class="list-group-item">
+                  <span>{{ task.description }}</span>
+                  <span class="badge" data-target="#remove-modal" data-toggle="modal" style="cursor: pointer;">&times;</span>
+                </li>
+              {% endfor %}{% endif %}
+            </ul>
+            <button role="button" class="btn btn-default btn-sm" data-target="#add-modal" data-toggle="modal">Add task</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      	<div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Tip</h3>
+          </div>
+          <div class="panel-body">
+            You can keep on top of your workload by adding 
+      	    or removing tasks from the list.
+          </div>
+        </div>
+      </div>
   </div>
 </div>
 
-<div class="modal fade" id="task-modal">
+<div class="modal fade" id="add-modal">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button role="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">Add task</h3>
       </div>
-      <form role="form" action="/" method="POST">
+      <form role="form" action="{{ url_for('index') }}" method="POST">
         <div class="modal-body">
           <div class="form-group">
             <input name="description" type="text" class="form-control" required>
@@ -40,4 +63,52 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="remove-modal">
+  <div class="modal-dialog modal-sm" role="document">
+  	<div class="modal-content">
+  	  <div class="modal-header">
+  	    <button role="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        <h3 class="modal-title">Remove task</h3>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove this task?
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default btn-sm">Remove</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="container-fluid text-center">
+    <div class="row">
+      <h5 class="text-uppercase">To-Do List</h5>
+      <p>A practical tool for task management.</p>
+    </div>
+    <div class="row">
+      © 2020 Copyright:<a href="https://todolist.com"> todolist.com</a>
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+$("document").ready(function() {
+  var description;
+  $(":submit", "#remove-modal").click(function() {
+  	console.log( description )
+    window.location = "/remove/" + description;
+  });
+  $(".badge", ".list-group").click(function() {
+  	description = $(this).parent().children().first().text();
+  });
+});
+</script>
 {% endblock %}

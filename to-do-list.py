@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -23,8 +23,15 @@ def index():
     task.description = request.form.get( 'description' )
     db.session.add( task )
     db.session.commit()
-  tasks = db.session.query( Task )
+  tasks = db.session.query( Task ).all()
   return render_template( 'index.html', tasks=tasks )
+
+@app.route('/remove/<string:description>', methods=[ 'GET', 'POST' ])
+def remove(description):
+  task = db.session.query( Task ).filter_by( description=description ).first()
+  db.session.delete( task )
+  db.session.commit()
+  return redirect( url_for( 'index' ) )
 
 app.run()
   
